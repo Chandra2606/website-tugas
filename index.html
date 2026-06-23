@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Tugas Kuliah</title>
+  <style>
+    :root {
+      --blue: #155eef;
+      --blue-dark: #0b3ea9;
+      --yellow: #f5c518;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d9e0ea;
+      --soft: #f4f7fb;
+      --white: #ffffff;
+      --green: #16845b;
+      --red: #c4322b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--soft);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    .topbar {
+      background: var(--blue-dark);
+      color: var(--white);
+      border-bottom: 4px solid var(--yellow);
+    }
+
+    .topbar-inner,
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar-inner {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: var(--blue-dark);
+      background: var(--yellow);
+    }
+
+    .date { color: #dbe7ff; font-size: 14px; }
+
+    main { padding: 34px 0 48px; }
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    h1 { margin: 0 0 6px; font-size: 30px; }
+    .heading p { margin: 0; color: var(--muted); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat,
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .stat { padding: 18px; }
+    .stat span { display: block; color: var(--muted); font-size: 14px; }
+    .stat strong { display: block; margin-top: 5px; font-size: 28px; }
+
+    .panel { padding: 20px; }
+    .panel + .panel { margin-top: 18px; }
+    h2 { margin: 0 0 16px; font-size: 18px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    label { display: grid; gap: 7px; color: #344054; font-size: 14px; font-weight: 650; }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid #b9c3d1;
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+    }
+
+    input:focus,
+    select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #155eef22; }
+
+    .button {
+      min-height: 42px;
+      padding: 9px 16px;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .button-primary { color: var(--white); background: var(--blue); }
+    .button-primary:hover { background: var(--blue-dark); }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .task-list { display: grid; gap: 10px; }
+
+    .task {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      background: var(--white);
+    }
+
+    .task.done { border-left-color: var(--green); background: #f4fbf8; }
+    .task.done .task-title { text-decoration: line-through; color: var(--muted); }
+
+    .check {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    .task-title { font-weight: 750; overflow-wrap: anywhere; }
+    .task-meta { margin-top: 4px; color: var(--muted); font-size: 13px; }
+
+    .delete {
+      border: 1px solid #efb4b0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      color: var(--red);
+      background: #fff7f6;
+      cursor: pointer;
+    }
+
+    .empty {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed #b9c3d1;
+      border-radius: 6px;
+    }
+
+    footer { padding: 20px; text-align: center; color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 760px) {
+      .topbar-inner { align-items: flex-start; flex-direction: column; padding: 14px 0; }
+      .heading { align-items: flex-start; flex-direction: column; }
+      .stats { grid-template-columns: 1fr; }
+      .form-grid, .toolbar { grid-template-columns: 1fr; }
+      .button-primary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark">T</span> TugasKu</div>
+      <div class="date" id="today"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="heading">
+      <div>
+        <h1>Daftar Tugas Kuliah</h1>
+        <p>Catat dan pantau tugas agar tidak melewati tenggat.</p>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Ringkasan tugas">
+      <div class="stat"><span>Total tugas</span><strong id="totalCount">0</strong></div>
+      <div class="stat"><span>Belum selesai</span><strong id="activeCount">0</strong></div>
+      <div class="stat"><span>Selesai</span><strong id="doneCount">0</strong></div>
+    </section>
+
+    <section class="panel">
+      <h2>Tambah Tugas</h2>
+      <form id="taskForm" class="form-grid">
+        <label>Nama tugas
+          <input id="taskName" type="text" placeholder="Contoh: Membuat laporan bisnis" required>
+        </label>
+        <label>Mata kuliah
+          <input id="courseName" type="text" placeholder="Contoh: Algoritma" required>
+        </label>
+        <label>Tenggat
+          <input id="dueDate" type="date" required>
+        </label>
+        <button class="button button-primary" type="submit">Tambah</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Data Tugas</h2>
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="Cari nama tugas atau mata kuliah...">
+        <select id="statusFilter" aria-label="Filter status">
+          <option value="all">Semua status</option>
+          <option value="active">Belum selesai</option>
+          <option value="done">Selesai</option>
+        </select>
+      </div>
+      <div id="taskList" class="task-list"></div>
+    </section>
+  </main>
+
+  <footer>&copy; 2026 TugasKu - Website lokal tanpa hosting</footer>
+
+  <script>
+    const storageKey = "tugasku-data";
+    const starterTasks = [
+      { id: 1, name: "Membuat presentasi kelompok", course: "Pengantar Bisnis", due: "2026-06-28", done: false },
+      { id: 2, name: "Menyelesaikan latihan coding", course: "Algoritma", due: "2026-06-30", done: true }
+    ];
+
+    let tasks = JSON.parse(localStorage.getItem(storageKey)) || starterTasks;
+
+    const form = document.getElementById("taskForm");
+    const list = document.getElementById("taskList");
+    const search = document.getElementById("searchInput");
+    const filter = document.getElementById("statusFilter");
+
+    document.getElementById("today").textContent = new Intl.DateTimeFormat("id-ID", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric"
+    }).format(new Date());
+
+    function save() {
+      localStorage.setItem(storageKey, JSON.stringify(tasks));
+    }
+
+    function formatDate(value) {
+      return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric", month: "long", year: "numeric"
+      }).format(new Date(value + "T00:00:00"));
+    }
+
+    function escapeHtml(value) {
+      const element = document.createElement("div");
+      element.textContent = value;
+      return element.innerHTML;
+    }
+
+    function render() {
+      const keyword = search.value.trim().toLowerCase();
+      const status = filter.value;
+      const shown = tasks.filter((task) => {
+        const matchesText = `${task.name} ${task.course}`.toLowerCase().includes(keyword);
+        const matchesStatus = status === "all" || (status === "done" ? task.done : !task.done);
+        return matchesText && matchesStatus;
+      });
+
+      document.getElementById("totalCount").textContent = tasks.length;
+      document.getElementById("activeCount").textContent = tasks.filter((task) => !task.done).length;
+      document.getElementById("doneCount").textContent = tasks.filter((task) => task.done).length;
+
+      if (!shown.length) {
+        list.innerHTML = '<div class="empty">Tidak ada tugas yang ditemukan.</div>';
+        return;
+      }
+
+      list.innerHTML = shown.map((task) => `
+        <article class="task ${task.done ? "done" : ""}">
+          <input class="check" type="checkbox" ${task.done ? "checked" : ""}
+            aria-label="Tandai selesai" onchange="toggleTask(${task.id})">
+          <div>
+            <div class="task-title">${escapeHtml(task.name)}</div>
+            <div class="task-meta">${escapeHtml(task.course)} · Tenggat ${formatDate(task.due)}</div>
+          </div>
+          <button class="delete" type="button" onclick="deleteTask(${task.id})">Hapus</button>
+        </article>
+      `).join("");
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      tasks.unshift({
+        id: Date.now(),
+        name: document.getElementById("taskName").value.trim(),
+        course: document.getElementById("courseName").value.trim(),
+        due: document.getElementById("dueDate").value,
+        done: false
+      });
+      save();
+      form.reset();
+      render();
+    });
+
+    window.toggleTask = (id) => {
+      tasks = tasks.map((task) => task.id === id ? { ...task, done: !task.done } : task);
+      save();
+      render();
+    };
+
+    window.deleteTask = (id) => {
+      if (!confirm("Hapus tugas ini?")) return;
+      tasks = tasks.filter((task) => task.id !== id);
+      save();
+      render();
+    };
+
+    search.addEventListener("input", render);
+    filter.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>
